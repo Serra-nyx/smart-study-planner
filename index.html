@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SeraphAesthetic</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    display: flex;
+    font-family: 'Poppins', sans-serif;
+    background: #050505;
+    color: white;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    border-right: 1px solid rgba(197,160,50,0.2);
+}
+.top-content { flex: 1; }
+
+.logo {
+    font-family: 'Playfair Display';
+    color: #c5a032;
+    font-size: 22px;
+}
+
+/* TOGGLE */
+.toggle span {
+    color: #c5a032;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.quote {
+    font-size: 12px;
+    color: #c5a032;
+    opacity: 0.8;
+    margin: 15px 0;
+    line-height: 1.5;
+    font-style: italic;
+}
+
+/* MENU */
+.menu button {
+    width: 100%;
+    padding: 12px;
+    margin: 6px 0;
+    background: none;
+    border: none;
+    color: #aaa;
+    text-align: left;
+    cursor: pointer;
+}
+.menu button {
+    width: 100%;
+    padding: 12px;
+    margin: 6px 0;
+    background: none;
+    border: none;
+    color: #aaa;
+    text-align: left;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.menu button:hover {
+    transform: translateX(5px);
+}
+.menu .active {
+    color: black;
+    background: #c5a032;
+    border-radius: 10px;
+}
+
+/* MAIN */
+.main { flex: 1; padding: 30px; }
+.page {
+    display: none;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: 0.4s;
+}
+
+.page.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+h1 { font-family: 'Playfair Display'; }
+
+/* CARD */
+.card {
+    border: 1px solid rgba(197,160,50,0.3);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+.card:hover {
+    box-shadow: 0 0 15px rgba(197,160,50,0.4);
+    transform: translateY(-2px);
+    transition: 0.3s;
+}
+.progress-bar {
+    width: 100%;
+    height: 12px;
+    background: #111;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #c5a032, gold);
+    transition: 0.4s;
+}
+
+/* GRID */
+.grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+}
+
+/* INPUT */
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background: transparent;
+    border: 1px solid #333;
+    color: white;
+    border-radius: 10px;
+}
+
+/* BUTTON */
+.gold-btn {
+    background: #c5a032;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+/* TIMER */
+.center { text-align:center; }
+.timer-text {
+    font-size: 60px;
+    color: #c5a032;
+    font-family: 'Playfair Display';
+}
+
+/* HOURS */
+.hours {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.hour {
+    display: flex;
+    flex-direction: column;
+}
+
+/* TABS */
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.tab {
+    padding: 10px 20px;
+    border-radius: 20px;
+    background: #111;
+    cursor: pointer;
+}
+
+.tab.active {
+    background: #c5a032;
+    color: black;
+}
+
+/* NOTES */
+.notes-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+}
+
+.note-item {
+    padding: 10px;
+    border-bottom: 1px solid #333;
+    cursor: pointer;
+}
+
+.note-item:hover {
+    color: #c5a032;
+}
+
+.delete-text {
+    color: #c5a032;
+    cursor: pointer;
+    font-size: 12px;
+}
+.task-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.task-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.task-left span {
+    transition: 0.3s;
+}
+
+.task-done span {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+/* BG */
+#bgOverlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: url('background.jpg') center/cover no-repeat;
+    opacity: 0;
+    transition: 1s;
+    z-index: -1;
+}
+
+/* FOOTER */
+.footer {
+    font-size: 12px;
+    color: #c5a032;
+    margin-top: 20px;
+    font-style: italic;
+}
+</style>
+</head>
+
+<body>
+
+<div id="bgOverlay"></div>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+<div class="top-content">
+
+<div class="logo">✨ Seraphaesthetic</div>
+
+<div class="toggle">
+Serra Mode:
+<span id="serraText" onclick="toggleSerra()">OFF</span>
+</div>
+
+<div class="quote">
+    “Rise & shine Upper East Siders like I always say "Success is the best revenge" Stay focused. Make them wonder how you do it. ✨"
+</div>
+<div class="menu">
+<button class="active" onclick="openPage('planner',this)">📅 Planner</button>
+<button onclick="openPage('timer',this)">⏳ Timer</button>
+<button onclick="openPage('tasks',this)">✅ Tasks</button>
+<button onclick="openPage('notes',this)">📝 Notes</button>
+<button onclick="openPage('vision',this)">🌌 Vision</button>
+<button onclick="openPage('productivity',this)">📊 Productivity</button>
+</div>
+
+</div>
+
+<div class="footer">
+© 2026 SeraphAesthetic<br>
+Designed & Developed by Sri Mathi R.V
+</div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<!-- ✅ ORIGINAL PLANNER RESTORED -->
+<div class="page active" id="planner">
+
+<h1>Weekly Planner</h1>
+
+<div class="tabs" id="tabs"></div>
+
+<div class="grid">
+    <div class="card">
+        <h2>Daily Notepad</h2>
+        <textarea rows="6" placeholder="Your thoughts for today..."></textarea>
+    </div>
+
+    <div class="card">
+        <h2>Top 3 Priorities</h2>
+        <input placeholder="Priority 1">
+        <input placeholder="Priority 2">
+        <input placeholder="Priority 3">
+    </div>
+</div>
+
+<div class="card">
+    <h2>Hourly Planner (6 AM - 12 AM)</h2>
+    <div class="hours" id="hours"></div>
+</div>
+
+</div>
+
+<!-- TIMER -->
+<div class="page" id="timer">
+<h1>Timer & Focus</h1>
+
+<div class="center">
+
+<button class="gold-btn" onclick="setMode('pomodoro')">Pomodoro</button>
+<button class="gold-btn" onclick="setMode('stopwatch')">Stopwatch</button>
+
+<div class="timer-text" id="timerDisplay">25:00</div>
+
+<input id="customTime" placeholder="Minutes (Pomodoro only)">
+
+<br><br>
+
+<button class="gold-btn" onclick="startTimer()">Start</button>
+<button class="gold-btn" onclick="stopTimer()">Stop</button>
+<button class="gold-btn" onclick="resetTimer()">Reset</button>
+
+</div>
+</div>
+
+<!-- TASKS -->
+<div class="page" id="tasks">
+<h1>Tasks</h1>
+<input id="taskInput">
+<button class="gold-btn" onclick="addTask()">Add</button>
+<div id="taskList"></div>
+</div>
+
+<!-- NOTES -->
+<div class="page" id="notes">
+<h1>Notes Vault</h1>
+
+<div class="notes-container">
+<div id="notesList"></div>
+
+<div>
+<input id="noteTitle" placeholder="Title">
+<textarea id="noteContent"></textarea>
+<button class="gold-btn" onclick="saveNote()">Create</button>
+<div id="editor"></div>
+</div>
+</div>
+</div>
+
+<!-- VISION -->
+<div class="page" id="vision">
+<h1>Vision Board</h1>
+<button class="gold-btn" onclick="imgInput.click()">Upload</button>
+<input type="file" id="imgInput" hidden onchange="addImage(event)">
+<div id="visionBoard"></div>
+</div>
+
+<!-- PRODUCTIVITY -->
+<div class="page" id="productivity">
+<h1>Productivity</h1>
+<div>Tasks Done: <span id="done">0</span></div>
+<div>Tasks Done: <span id="done">0</span></div>
+
+<div class="progress-bar">
+    <div class="progress-fill" id="progressFill"></div>
+</div>
+
+<div><span id="rate">0%</span></div>
+</div>
+
+</div>
+
+<script>
+
+/* NAV */
+function openPage(id, el){
+document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+document.querySelectorAll(".menu button").forEach(b=>b.classList.remove("active"));
+el.classList.add("active");
+}
+
+/* SERRA */
+let serra=false;
+function toggleSerra(){
+serra=!serra;
+bgOverlay.style.opacity=serra?1:0;
+serraText.innerText=serra?"ON":"OFF";
+}
+
+/* PLANNER JS */
+const days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+let currentDay = 0;
+
+const tabs = document.getElementById("tabs");
+const hoursDiv = document.getElementById("hours");
+
+let plannerData = JSON.parse(localStorage.getItem("plannerData")) || {
+    notes: Array(7).fill(""),
+    priorities: Array(7).fill(["","",""]),
+    hours: Array(7).fill().map(()=>Array(18).fill(""))
+};
+
+days.forEach((d,i)=>{
+    let tab = document.createElement("div");
+    tab.className = "tab " + (i===0?"active":"");
+    tab.innerText = d;
+    tab.onclick = () => switchDay(i, tab);
+    tabs.appendChild(tab);
+});
+
+function switchDay(i, el){
+    saveDay();
+    currentDay = i;
+
+    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+    el.classList.add("active");
+
+    loadDay();
+}
+
+function loadDay(){
+    document.querySelector("textarea").value = plannerData.notes[currentDay];
+
+    let inputs = document.querySelectorAll(".grid input");
+    inputs.forEach((inp,i)=>{
+        inp.value = plannerData.priorities[currentDay][i];
+    });
+
+    let hourInputs = document.querySelectorAll(".hours input");
+    hourInputs.forEach((inp,i)=>{
+        inp.value = plannerData.hours[currentDay][i];
+    });
+}
+
+function saveDay(){
+    plannerData.notes[currentDay] = document.querySelector("textarea").value;
+
+    let inputs = document.querySelectorAll(".grid input");
+    inputs.forEach((inp,i)=>{
+        plannerData.priorities[currentDay][i] = inp.value;
+    });
+
+    let hourInputs = document.querySelectorAll(".hours input");
+    hourInputs.forEach((inp,i)=>{
+        plannerData.hours[currentDay][i] = inp.value;
+    });
+
+    localStorage.setItem("plannerData", JSON.stringify(plannerData));
+}
+
+for(let i=6;i<=23;i++){
+    let hour = i<12 ? i+" AM" : (i===12?"12 PM":(i-12)+" PM");
+    hoursDiv.innerHTML += `
+        <div class="hour">
+            <label>${hour}</label>
+            <input placeholder="Task...">
+        </div>
+    `;
+}
+
+loadDay();
+
+/* TIMER */
+let time = 1500;
+let timer;
+let mode = "pomodoro";
+
+function setMode(m){
+    mode = m;
+    resetTimer();
+}
+
+function startTimer(){
+    clearInterval(timer);
+
+    if(mode === "pomodoro"){
+        let t = customTime.value;
+        if(t) time = t * 60;
+
+        timer = setInterval(()=>{
+            if(time <= 0) return;
+            time--;
+            update();
+        },1000);
+    }
+
+    if(mode === "stopwatch"){
+        timer = setInterval(()=>{
+            time++;
+            update();
+        },1000);
+    }
+}
+
+function stopTimer(){
+    clearInterval(timer);
+}
+
+function resetTimer(){
+    clearInterval(timer);
+    time = (mode === "pomodoro") ? 1500 : 0;
+    timerDisplay.innerText = (mode === "pomodoro") ? "25:00" : "0:00";
+}
+
+function update(){
+    let m = Math.floor(time/60);
+    let s = time % 60;
+    timerDisplay.innerText = `${m}:${s<10?'0'+s:s}`;
+}
+
+/* TASK */
+function addTask(){
+let v=taskInput.value.trim();
+if(!v)return;
+
+let div=document.createElement("div");
+div.className="card";
+div.draggable = true;
+
+div.innerHTML = `
+<div class="task-row">
+
+    <div class="task-left">
+        <input type="checkbox" onchange="toggleTask(this); updateStats()">
+        <span contenteditable="true">${v}</span>
+    </div>
+
+    <span class="delete-text" onclick="this.closest('.card').remove();updateStats()">delete</span>
+
+</div>
+`;
+
+taskList.appendChild(div);
+taskInput.value="";
+updateStats();
+}
+
+function updateStats(){
+    let total = document.querySelectorAll("#taskList .card").length;
+    let doneTasks = document.querySelectorAll("#taskList input:checked").length;
+
+    done.innerText = doneTasks;
+
+    let percent = total ? Math.round((doneTasks/total)*100) : 0;
+
+    rate.innerText = percent + "%";
+
+    // 👇 THIS IS THE NEW LINE (progress bar control)
+    progressFill.style.width = percent + "%";
+}
+
+document.addEventListener("dragover", e=>{
+    e.preventDefault();
+    let container = taskList;
+    let afterElement = getDragAfterElement(container, e.clientY);
+
+    if(afterElement == null){
+        container.appendChild(draggedItem);
+    } else {
+        container.insertBefore(draggedItem, afterElement);
+    }
+});
+
+function getDragAfterElement(container, y){
+    const elements = [...container.querySelectorAll(".card:not(.dragging)")];
+
+    return elements.reduce((closest, child)=>{
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height/2;
+
+        if(offset < 0 && offset > closest.offset){
+            return { offset: offset, element: child };
+        } else {
+            return closest;
+        }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+function toggleTask(cb){
+    let card = cb.closest(".card");
+    card.classList.toggle("task-done", cb.checked);
+}
+
+/* NOTES */
+let notes=[];
+
+function saveNote(){
+notes.push({
+title: noteTitle.value,
+content: noteContent.value
+});
+renderNotes();
+noteTitle.value="";
+noteContent.value="";
+}
+
+function renderNotes(){
+notesList.innerHTML="";
+notes.forEach((n,i)=>{
+let div=document.createElement("div");
+div.className="note-item";
+div.innerText=n.title;
+div.onclick=()=>openNote(i);
+notesList.appendChild(div);
+});
+}
+
+function openNote(i){
+let n=notes[i];
+
+editor.innerHTML=`
+<h3 contenteditable="true" oninput="notes[${i}].title=this.innerText">${n.title}</h3>
+<textarea oninput="notes[${i}].content=this.value">${n.content}</textarea>
+<span class="delete-text" onclick="notes.splice(${i},1);renderNotes();editor.innerHTML=''"> delete</span>
+`;
+}
+
+/* IMAGE */
+function addImage(e){
+let reader=new FileReader();
+reader.onload=function(){
+let img=document.createElement("img");
+img.src=reader.result;
+img.style.width="200px";
+visionBoard.appendChild(img);
+}
+reader.readAsDataURL(e.target.files[0]);
+}
+
+</script>
+
+</body>
+</html>
